@@ -1,0 +1,15 @@
+version: '3'
+   
+services:
+  rtmp:
+    build: rtmp
+    ports:
+     - "1935:1935"
+     
+  http:
+    build: http
+    ports:
+     - "80:80"
+     
+    depends_on:
+      - rtmp 

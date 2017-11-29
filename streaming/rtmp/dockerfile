@@ -1,0 +1,17 @@
+FROM microsoft/windowsservercore
+
+RUN powershell Invoke-WebRequest -Uri "https://downloads.sourceforge.net/project/monaserver/MonaServer_1.2_Win32.zip" -OutFile "C:\monaserver.zip" -UserAgent [Microsoft.PowerShell.Commands.PSUserAgent]::FireFox
+
+ADD https://download.microsoft.com/download/3/8/7/387A0F10-C0C1-4C74-82A9-4BB741342366/vcredist_x86.exe C:\\redist.exe
+
+RUN C:\\redist.exe /install /passive /norestart
+
+RUN powershell -Command "expand-archive -Path 'c:\monaserver.zip' -DestinationPath 'c:\monaserver'"
+
+ADD MonaServer.ini C:\\monaserver
+
+ADD main.lua C:\\monaserver\\www
+
+CMD ipconfig
+
+CMD c:\\monaserver\\monaserver.exe

@@ -1,0 +1,20 @@
+FROM microsoft/iis:windowsservercore
+
+ADD https://download.videolan.org/vlc/2.2.6/win64/vlc-2.2.6-win64.zip C:\\vlc.zip
+
+ADD https://raw.githubusercontent.com/video-dev/hls.js/master/dist/hls.min.js C:\\inetpub\\wwwroot
+
+COPY index.htm C:\\inetpub\\wwwroot
+
+RUN powershell -Command "expand-archive -Path 'c:\vlc.zip' -DestinationPath 'c:\vlc'"
+
+RUN %systemroot%\system32\inetsrv\appcmd set config /section:staticContent /+"[fileExtension='.m3u8',mimeType='application/x-mpegURL']"
+RUN %systemroot%\system32\inetsrv\appcmd set config /section:staticContent /-"[fileExtension='.ts',mimeType='video/vnd.dlna.mpeg-tts']"
+RUN %systemroot%\system32\inetsrv\appcmd set config /section:staticContent /+"[fileExtension='.ts',mimeType='video/MP2T']"
+
+
+RUN mkdir c:\\inetpub\\wwwroot\\live
+
+ENTRYPOINT C:\\vlc\\vlc-2.2.6\\vlc.exe -I dummy rtmp://streaming_rtmp_1/live/secret123  --sout=#transcode{width=1080,height=720,fps=30,vcodec=h264,venc=x264{aud,profile=baseline,level=30,keyint=10,ref=1},aenc=ffmpeg{strict=-2},acodec=aac}:std{access=livehttp{seglen=1,delsegs=true,numsegs=5,index=c:/inetpub/wwwroot/live/live.m3u8,index-url=http://<externe_ip_des_servers>/live/live-########.ts},mux=ts{use-key-frames},dst=c:/inetpub/wwwroot/live/live-########.ts}
+
+
