@@ -19,4 +19,4 @@ Ist auf dem Host-System eine virtuelle Netzwerkkarte aus VMWare eingebunden, fun
 Aktuell nur als Demonstration geeignet.
 
 - Für den Produktivbetrieb zu instabil.
-- Die externe IP-Adresse sollte per Veriable zu setzen sein
+- Die externe IP-Adresse sollte per Variable zu setzen sein
